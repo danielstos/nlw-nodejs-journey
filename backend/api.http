@@ -1,0 +1,10 @@
+###
+
+POST http://localhost:3333/trips
+Content-Type: application/json
+
+{
+"destination": "Sao Paulo",
+"starts_at": "2024-07-23 18:00:00",
+"ends_at": "2024-07-30 18:00:00"
+}

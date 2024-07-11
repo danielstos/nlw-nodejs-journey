@@ -18,19 +18,27 @@ export async function createTrip(app: FastifyInstance) {
           ends_at: z.coerce.date(),
           owner_name: z.string(),
           owner_email: z.string().email(),
+          emails_to_invite: z.array(z.string().email()),
         }),
       },
     },
     // Validação e criação da viagem no banco de dados
     //e envio de email para o proprietário da viagem
     async (request) => {
-      const { destination, starts_at, ends_at, owner_name, owner_email } = request.body
+      const {
+        destination,
+        starts_at,
+        ends_at,
+        owner_name,
+        owner_email,
+        emails_to_invite,
+      } = request.body;
       if (dayjs(starts_at).isBefore(new Date())) {
-        throw new Error("Invalid trip start date ")
+        throw new Error("Invalid trip start date ");
       }
 
       if (dayjs(ends_at).isBefore(dayjs(starts_at))) {
-        throw new Error("Invalid trip end date ")
+        throw new Error("Invalid trip end date ");
       }
 
       // Criando a viagem e a inclusão do participante  no banco de dados
@@ -40,15 +48,22 @@ export async function createTrip(app: FastifyInstance) {
           starts_at,
           ends_at,
           participants: {
-            create: {
-              name: owner_name,
-              email: owner_email,
-              is_owner: true,
-              is_confirmed: true,
-            }
-          }
-        }
-      })
+            createMany: {
+              data: [
+                {
+                  name: owner_name,
+                  email: owner_email,
+                  is_owner: true,
+                  is_confirmed: true,
+                },
+                ...emails_to_invite.map((email) => {
+                  return { email };
+                }),
+              ],
+            },
+          },
+        },
+      });
 
       // Envio de email para o proprietário da viagem
       const mail = await getMailClient();
@@ -63,7 +78,10 @@ export async function createTrip(app: FastifyInstance) {
           address: owner_email,
         },
         subject: "Testando envio de e-mail",
-        html: `<p> Teste envio de e-mail </p>`,
+        html: `
+        
+        
+        `.trim(),
       });
       console.log(nodemailer.getTestMessageUrl(message));
 

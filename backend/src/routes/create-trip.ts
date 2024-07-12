@@ -1,10 +1,16 @@
 import type { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat"
+import "dayjs/locale/pt-br"
 import nodemailer from "nodemailer";
 import { z } from "zod";
 import { prisma } from "../lib/prisma";
 import { getMailClient } from "../lib/mail";
+
+
+dayjs.locale("pt-br");
+dayjs.extend(localizedFormat);
 
 // Definição do schema de validação para a rota de criação de viagem
 export async function createTrip(app: FastifyInstance) {
@@ -65,6 +71,11 @@ export async function createTrip(app: FastifyInstance) {
         },
       });
 
+      const fomarttedStartDate = dayjs(starts_at).format('LL')
+      const fomarttedEndDate = dayjs(ends_at).format('LL')
+
+      const confimationLink = `http://localhost3333/trips/${trip.id}/confirm`
+
       // Envio de email para o proprietário da viagem
       const mail = await getMailClient();
 
@@ -77,9 +88,24 @@ export async function createTrip(app: FastifyInstance) {
           name: owner_name,
           address: owner_email,
         },
-        subject: "Testando envio de e-mail",
+        subject: `Confirme sua Viagem para ${destination} em ${fomarttedStartDate}`,
         html: `
-        
+        <div style="font-family:sans-serif; font-size:16px; line-height: 1.6;">
+          <p></p>
+            Você foi convidado(a) para participar de uma viagem para <strong>${destination} </strong>
+          nas datas de <strong> ${fomarttedStartDate} </strong> até <strong> ${fomarttedEndDate} </strong>  .
+          </p>
+          <p></p>
+          <p>Para confirmar sua presença na viagem, clique no link abaixo:</p>
+          <p></p>
+          <p><a href="${confimationLink}">Confirmar Viagem</a></p>
+          <p></p>
+          <p>
+            Caso você não saiba do que se trata esse e-mail ou não poderá estar
+            presente, apenas ignore esse e-mail.
+          </p>
+        </div>
+
         
         `.trim(),
       });

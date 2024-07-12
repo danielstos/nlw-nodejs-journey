@@ -6,7 +6,7 @@ import {
   validatorCompiler,
 } from "fastify-type-provider-zod";
 import { confirmTrip } from "./routes/confirm-trip";
-import { availableParallelism } from "os";
+
 
 const app = fastify();
 

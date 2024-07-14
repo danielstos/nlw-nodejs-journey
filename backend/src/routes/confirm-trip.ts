@@ -6,7 +6,7 @@ import { getMailClient } from "../lib/mail";
 import nodemailer from "nodemailer";
 import { dayjs } from "../lib/dayjs";
 
-// Definição do schema de validação para a rota de confirmação para convidados da viagem
+// Definição do schema de validação para a rota de confirmação da viagem
 export async function confirmTrip(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().get(
     "/trips/:tripId/confirm",
@@ -53,7 +53,7 @@ export async function confirmTrip(app: FastifyInstance) {
       // Enviando email para todos os participantes da viagem (exceto o proprietário)
       await Promise.all(
         trip.participants.map(async (participant) => {
-          const confimationLink = `http://localhost:3333/trips/${trip.id}/confirm/${participant.id}`
+          const confimationLink = `http://localhost:3333/participants/${participant.id}/confirm`
 
           const message = await mail.sendMail({
             from: {

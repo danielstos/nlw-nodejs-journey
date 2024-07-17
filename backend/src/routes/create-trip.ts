@@ -43,7 +43,7 @@ export async function createTrip(app: FastifyInstance) {
         throw new Error("Invalid trip end date ");
       }
 
-      // Criando a viagem e a inclusão do participante  no banco de dados
+      // Criando a viagem e a inclusão do participante no banco de dados
       const trip = await prisma.trip.create({
         data: {
           destination,

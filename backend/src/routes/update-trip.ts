@@ -3,6 +3,7 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { prisma } from "../lib/prisma";
 import { dayjs } from "../lib/dayjs";
+import { ClientError } from "../errors/client-error";
 
 // Atualizar dados de uma viagem
 export async function updateTrip(app: FastifyInstance) {
@@ -29,15 +30,15 @@ export async function updateTrip(app: FastifyInstance) {
       });
 
       if (!trip) {
-        throw new Error("Trip not found");
+        throw new ClientError("Trip not found");
       }
 
       if (dayjs(starts_at).isBefore(new Date())) {
-        throw new Error("Invalid trip start date ");
+        throw new ClientError("Invalid trip start date ");
       }
 
       if (dayjs(ends_at).isBefore(dayjs(starts_at))) {
-        throw new Error("Invalid trip end date ");
+        throw new ClientError("Invalid trip end date ");
       }
 
       // Atualizando os dados da viagem no banco de dados

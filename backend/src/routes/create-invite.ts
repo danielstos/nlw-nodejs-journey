@@ -5,6 +5,8 @@ import nodemailer from "nodemailer";
 import { prisma } from "../lib/prisma";
 import { dayjs } from "../lib/dayjs";
 import { getMailClient } from "../lib/mail";
+import { ClientError } from "../errors/client-error";
+import { env } from "../env";
 
 // convidar um novo participantes
 export async function createInvite(app: FastifyInstance) {
@@ -33,7 +35,7 @@ export async function createInvite(app: FastifyInstance) {
       });
 
       if (!trip) {
-        throw new Error("Trip not found");
+        throw new ClientError("Trip not found");
       }
 
       // cadastrado  um novo participante da viagem
@@ -51,7 +53,7 @@ export async function createInvite(app: FastifyInstance) {
       // Envio de email para o proprietário da viagem
       const mail = await getMailClient();
       // Estrutura do email com o link para confirmar a viagem
-      const confimationLink = `http://localhost:3333/participants/${participant.id}/confirm`;
+      const confimationLink = `${env.API_BASE_URL}/participants/${participant.id}/confirm`;
 
       // Enviando email para o novo participante
       const message = await mail.sendMail({

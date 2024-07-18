@@ -5,6 +5,8 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma";
 import { getMailClient } from "../lib/mail";
 import { dayjs } from "../lib/dayjs";
+import { ClientError } from "../errors/client-error";
+import { env } from "../env";
 
 
 
@@ -36,11 +38,11 @@ export async function createTrip(app: FastifyInstance) {
         emails_to_invite,
       } = request.body;
       if (dayjs(starts_at).isBefore(new Date())) {
-        throw new Error("Invalid trip start date ");
+        throw new ClientError("Invalid trip start date ");
       }
 
       if (dayjs(ends_at).isBefore(dayjs(starts_at))) {
-        throw new Error("Invalid trip end date ");
+        throw new ClientError("Invalid trip end date ");
       }
 
       // Criando a viagem e a inclusão do participante no banco de dados
@@ -71,7 +73,7 @@ export async function createTrip(app: FastifyInstance) {
       const fomarttedStartDate = dayjs(starts_at).format('LL')
       const fomarttedEndDate = dayjs(ends_at).format('LL')
 
-      const confimationLink = `http://localhost:3333/trips/${trip.id}/confirm`
+      const confimationLink = `${env.API_BASE_URL}/trips/${trip.id}/confirm`
 
       // Envio de email para o proprietário da viagem
       const mail = await getMailClient();

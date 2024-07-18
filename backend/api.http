@@ -8,3 +8,12 @@ Content-Type: application/json
 "starts_at": "2024-07-23 18:00:00",
 "ends_at": "2024-07-30 18:00:00"
 }
+
+###
+ http://localhost:3333/trips/00000000-0000-0000-0000-000000000000 
+ 
+ {
+    "destination": "New York", 
+    "starts_at": "2024-07-01T00:00:00.000Z", 
+    "ends_at": "2024-07-10T00:00:00.000Z"
+ }

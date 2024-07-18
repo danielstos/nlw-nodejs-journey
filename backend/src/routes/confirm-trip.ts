@@ -5,6 +5,8 @@ import { prisma } from "../lib/prisma";
 import { getMailClient } from "../lib/mail";
 import nodemailer from "nodemailer";
 import { dayjs } from "../lib/dayjs";
+import { ClientError } from "../errors/client-error";
+import { env } from "../env";
 
 // Definição do schema de validação para a rota de confirmação da viagem
 export async function confirmTrip(app: FastifyInstance) {
@@ -34,10 +36,10 @@ export async function confirmTrip(app: FastifyInstance) {
       });
 
       if (!trip) {
-        throw new Error("Trip not found");
+        throw new ClientError("Trip not found");
       }
       if (trip.is_confirmed) {
-        return reply.redirect(`http://localhost:3333/trips/${trip.id}`);
+        return reply.redirect(`${env.WEB_BASE_URL}/trips/${trip.id}`);
       }
       await prisma.trip.update({
         where: { id: tripId },
@@ -53,7 +55,7 @@ export async function confirmTrip(app: FastifyInstance) {
       // Enviando email para todos os participantes da viagem (exceto o proprietário)
       await Promise.all(
         trip.participants.map(async (participant) => {
-          const confimationLink = `http://localhost:3333/participants/${participant.id}/confirm`
+          const confimationLink = `${env.API_BASE_URL}/participants/${participant.id}/confirm`
 
           const message = await mail.sendMail({
             from: {
@@ -85,7 +87,7 @@ export async function confirmTrip(app: FastifyInstance) {
         })
       );
 
-      return reply.redirect(`https://localhost:3000/trips/${tripId}`)
+      return reply.redirect(`${env.WEB_BASE_URL}/trips/${tripId}`)
     }
   )
 }

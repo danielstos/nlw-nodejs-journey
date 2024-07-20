@@ -5,7 +5,7 @@ Backend do plann.er, uma aplicação de gerenciamento de viagens.
 
 ## Tecnologias Utilizadas
 
-[](https://github.com/danielstos/nlw-nodejs-journey?tab=readme-ov-file#Tecnologias Utilizadas)
+[](https://github.com/danielstos/nlw-nodejs-journey?tab=readme-ov-file#Tecnologias-Utilizadas)
 
 - NodeJs
 - Fastify

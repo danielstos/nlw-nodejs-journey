@@ -1,6 +1,5 @@
 #  plann.er  API
 
-[](https://github.com/danielstos/nlw-nodejs-journey?tab=readme-ov-file#planner-app-api)
 
 Backend do plann.er, uma aplicação de gerenciamento de viagens.
 

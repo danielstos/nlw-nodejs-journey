@@ -79,9 +79,6 @@ npx prisma db seed
 # Apaga o banco atual e refaz o seed
 npx prisma migrate reset
 ```
-# Estrutura do Projeto
-
-A estrutura do projeto é a seguinte:
 
 # Estrutura do Projeto
 
